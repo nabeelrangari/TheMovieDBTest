@@ -2,6 +2,7 @@ package com.nabeel.themoviedbtest.data.network
 
 import android.content.Context
 import com.google.gson.GsonBuilder
+import com.nabeel.themoviedbtest.BuildConfig
 import com.nabeel.themoviedbtest.util.App.Companion.appContext
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -43,7 +44,10 @@ object Networking {
         client.addInterceptor(
             HttpLoggingInterceptor()
                 .apply {
-                    HttpLoggingInterceptor.Level.BODY
+                    level = if (BuildConfig.DEBUG)
+                        HttpLoggingInterceptor.Level.BODY
+                    else
+                        HttpLoggingInterceptor.Level.NONE
                 })
         client.addInterceptor(interceptor)
             .retryOnConnectionFailure(true)

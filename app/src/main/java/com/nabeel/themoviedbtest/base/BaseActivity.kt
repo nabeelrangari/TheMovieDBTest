@@ -12,6 +12,7 @@ abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(layoutId())
         setToolbar()
+        initView()
         initVM()
     }
 
@@ -30,6 +31,8 @@ abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
             lifecycle.addObserver(mViewModel!!)
         }
     }
+
+    open fun initView() {}
 
     /**
     [Toolbar]

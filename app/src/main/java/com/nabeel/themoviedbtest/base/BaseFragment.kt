@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 
 abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
-    private var mViewModel: VM? = null
+    protected var mViewModel: VM? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
