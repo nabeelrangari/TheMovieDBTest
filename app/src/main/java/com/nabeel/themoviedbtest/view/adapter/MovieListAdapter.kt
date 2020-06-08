@@ -1,6 +1,9 @@
 package com.nabeel.themoviedbtest.view.adapter
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Handler
@@ -14,10 +17,11 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.nabeel.themoviedbtest.R
 import com.nabeel.themoviedbtest.model.Result
 import com.nabeel.themoviedbtest.util.AppConstant
+import com.nabeel.themoviedbtest.view.activity.MovieDetailsActivity
 import kotlinx.android.synthetic.main.item_list_grid_movie.view.*
 import kotlinx.android.synthetic.main.progress_loading.view.*
 
-class MovieListAdapter(var movieList: ArrayList<Result?>) :
+class MovieListAdapter(var movieList: ArrayList<Result?>, var activity: Activity) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private lateinit var mContext: Context
@@ -60,6 +64,13 @@ class MovieListAdapter(var movieList: ArrayList<Result?>) :
                 .placeholder(R.drawable.ic_placeholder)
                 .into(holder.itemView.ic_poster)
 
+            holder.itemView.setOnClickListener {
+                val options = ActivityOptions.makeSceneTransitionAnimation(activity)
+                val intent = Intent(mContext, MovieDetailsActivity::class.java)
+                intent.putExtra("id", movie?.id)
+                mContext.startActivity(intent, options.toBundle())
+            }
+
         }
     }
 
@@ -68,6 +79,10 @@ class MovieListAdapter(var movieList: ArrayList<Result?>) :
         notifyDataSetChanged()
     }
 
+    fun setSearchMovieList(dataViews: ArrayList<Result?>) {
+        this.movieList = dataViews
+        notifyDataSetChanged()
+    }
 
     fun addLoadingView() {
         //add loading item

@@ -13,17 +13,25 @@ import com.nabeel.themoviedbtest.R
 import com.nabeel.themoviedbtest.base.BaseFragment
 import com.nabeel.themoviedbtest.data.network.Status
 import com.nabeel.themoviedbtest.model.Result
+import com.nabeel.themoviedbtest.util.Communicate
 import com.nabeel.themoviedbtest.util.OnLoadMoreListener
 import com.nabeel.themoviedbtest.util.RecyclerViewLoadMoreScroll
+import com.nabeel.themoviedbtest.view.activity.HomeActivity
 import com.nabeel.themoviedbtest.view.adapter.MovieListAdapter
 import com.nabeel.themoviedbtest.viewmodel.MovieViewModel
 import kotlinx.android.synthetic.main.fragment_movie.*
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 class MovieFragment(context: Context) : BaseFragment<MovieViewModel>() {
 
     override fun providerVMClass(): Class<MovieViewModel> = MovieViewModel::class.java
     private lateinit var rootView: View
     private var movieList: ArrayList<Result?> = ArrayList()
+    private lateinit var searchMovieList: ArrayList<Result?>
+    private var searchTitleList: ArrayList<String> = ArrayList()
+
     private var loadMoreMovieList: ArrayList<Result?> = ArrayList()
 
     private lateinit var recyclerView: RecyclerView
@@ -45,7 +53,7 @@ class MovieFragment(context: Context) : BaseFragment<MovieViewModel>() {
         mLayoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.layoutManager = mLayoutManager
         recyclerView.setHasFixedSize(true)
-        adapter = MovieListAdapter(movieList)
+        adapter = MovieListAdapter(movieList, requireActivity())
         recyclerView.adapter = adapter
         setRVScrollListener()
         setData()
@@ -72,8 +80,40 @@ class MovieFragment(context: Context) : BaseFragment<MovieViewModel>() {
         recyclerView.addOnScrollListener(scrollListener)
     }
 
+    override fun setListeners() {
+        super.setListeners()
+
+        (activity as HomeActivity?)?.setOnSearchListener(object : Communicate {
+            override fun getSearchQuery(query: String) {
+                Log.e("Fragment", "query - $query")
+                if (query.isNotEmpty())
+                    searchMovie(query)
+                else
+                    adapter.setSearchMovieList(movieList)
+            }
+        })
+    }
+
+    private fun searchMovie(query: String) {
+        searchMovieList = ArrayList()
+        searchTitleList = ArrayList()
+        for (item in movieList) {
+            val title = item?.title?.toLowerCase(Locale.getDefault())
+            if (!searchTitleList.contains(title)) {
+                if (title!!.contains(query)) {
+                    searchTitleList.add(title)
+                    searchMovieList.add(item)
+                }
+            }
+
+        }
+        Log.e("movies", "itemsCells - ${searchMovieList.size}")
+        if (searchMovieList.size > 0) {
+            adapter.setSearchMovieList(searchMovieList)
+        }
+    }
+
     private fun setData() {
-        Log.e("TAG", "categoryStr - $categoryStr")
         mViewModel?.getMovies(page, categoryStr)?.observe(this, Observer { networkResource ->
             when (networkResource.status) {
                 Status.LOADING -> {
@@ -91,6 +131,8 @@ class MovieFragment(context: Context) : BaseFragment<MovieViewModel>() {
                             page++
                             totalPages = topRatedMovies.totalPages!!
                             movieList.addAll(it1)
+                            Log.e("movies", "movieList size - " + movieList.size)
+
                             adapter.addData(movieList)
                         }
                     }

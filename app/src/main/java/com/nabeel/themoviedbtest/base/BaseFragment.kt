@@ -15,6 +15,7 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         initVM()
+        setListeners()
         return provideYourFragmentView(inflater, container, savedInstanceState)
     }
 
@@ -35,6 +36,8 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
      * [BaseViewModel]
      */
     open fun providerVMClass(): Class<VM>? = null
+
+    open fun setListeners() {}
 
     override fun onDestroy() {
         mViewModel?.let {

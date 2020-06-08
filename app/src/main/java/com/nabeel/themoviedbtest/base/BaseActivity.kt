@@ -7,13 +7,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.nabeel.themoviedbtest.util.NetworkStateReceiver
 
 abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
-    private var mViewModel: VM? = null
+    protected var mViewModel: VM? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutId())
         setToolbar()
         initView()
         initVM()
+        setListeners()
     }
 
     private fun setToolbar() {
@@ -33,6 +34,8 @@ abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
     }
 
     open fun initView() {}
+
+    open fun setListeners() {}
 
     /**
     [Toolbar]
