@@ -3,6 +3,7 @@ package com.nabeel.themoviedbtest.viewmodel
 
 import androidx.lifecycle.liveData
 import com.nabeel.themoviedbtest.base.BaseViewModel
+import com.nabeel.themoviedbtest.data.database.entity.Upcoming
 import com.nabeel.themoviedbtest.data.network.NetworkConnectionInterceptor
 import com.nabeel.themoviedbtest.data.network.Resource
 import com.nabeel.themoviedbtest.util.App.Companion.repository
@@ -21,6 +22,15 @@ class MovieDetailsViewModel : BaseViewModel() {
             }
         } catch (e: NetworkConnectionInterceptor.NoConnectivityException) {
             emit(Resource.error(e.localizedMessage))
+        }
+    }
+
+    fun updateMovie(input: Upcoming) = liveData(Dispatchers.IO) {
+        try {
+            repository.updateUpcomingMovie(input)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(e.localizedMessage)
         }
     }
 }

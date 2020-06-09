@@ -2,8 +2,7 @@ package com.nabeel.themoviedbtest.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.nabeel.erostestapp.model.Genre
-import com.nabeel.erostestapp.model.SpokenLanguage
+import java.io.Serializable
 
 data class Result(
     @SerializedName("popularity")
@@ -53,7 +52,7 @@ data class Result(
     var budget: Int = 0,
     @SerializedName("genres")
     @Expose
-    var genres: List<Genre>,
+    var genres: ArrayList<Genre>,
     @SerializedName("homepage")
     @Expose
     var homepage: String? = null,
@@ -65,11 +64,12 @@ data class Result(
     var runtime: Int = 0,
     @SerializedName("spoken_languages")
     @Expose
-    var spokenLanguages: List<SpokenLanguage>,
+    var spokenLanguages: ArrayList<SpokenLanguage>,
     @SerializedName("status")
     @Expose
     var status: String? = null,
     @SerializedName("tagline")
     @Expose
-    var tagline: String? = null
-)
+    var tagline: String? = null,
+    var category: String
+) : Serializable

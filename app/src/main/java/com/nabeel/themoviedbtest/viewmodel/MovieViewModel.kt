@@ -1,8 +1,10 @@
 package com.nabeel.themoviedbtest.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.nabeel.themoviedbtest.base.BaseViewModel
+import com.nabeel.themoviedbtest.data.database.entity.Upcoming
 import com.nabeel.themoviedbtest.data.network.NetworkConnectionInterceptor
 import com.nabeel.themoviedbtest.data.network.Resource
 import com.nabeel.themoviedbtest.model.Movies
@@ -17,7 +19,6 @@ class MovieViewModel : BaseViewModel() {
 
     fun getMovies(page: Int, category: String) = liveData(Dispatchers.IO) {
         try {
-            Log.e("TAG", "categoryStr - $category")
             var response: Response<Movies>? = null
             emit(Resource.loading())
             when (category) {
@@ -41,5 +42,17 @@ class MovieViewModel : BaseViewModel() {
         }
     }
 
+    fun addAllMovie(input: List<Upcoming>) = liveData(Dispatchers.IO) {
+        try {
+            repository.addAllUpcomingMovies(input)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(e.localizedMessage)
+        }
+    }
 
+    fun getAllMovies(): LiveData<List<Upcoming>> =
+        liveData(Dispatchers.IO) {
+            emitSource(repository.getAllUpcomingMovies())
+        }
 }

@@ -11,8 +11,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nabeel.themoviedbtest.R
 import com.nabeel.themoviedbtest.base.BaseFragment
+import com.nabeel.themoviedbtest.data.database.entity.Upcoming
 import com.nabeel.themoviedbtest.data.network.Status
+import com.nabeel.themoviedbtest.model.Genre
 import com.nabeel.themoviedbtest.model.Result
+import com.nabeel.themoviedbtest.model.SpokenLanguage
 import com.nabeel.themoviedbtest.util.Communicate
 import com.nabeel.themoviedbtest.util.OnLoadMoreListener
 import com.nabeel.themoviedbtest.util.RecyclerViewLoadMoreScroll
@@ -31,6 +34,8 @@ class MovieFragment(context: Context) : BaseFragment<MovieViewModel>() {
     private var movieList: ArrayList<Result?> = ArrayList()
     private lateinit var searchMovieList: ArrayList<Result?>
     private var searchTitleList: ArrayList<String> = ArrayList()
+    private var genreList: ArrayList<Genre> = ArrayList()
+    private var sLanguageList: ArrayList<SpokenLanguage> = ArrayList()
 
     private var loadMoreMovieList: ArrayList<Result?> = ArrayList()
 
@@ -53,7 +58,7 @@ class MovieFragment(context: Context) : BaseFragment<MovieViewModel>() {
         mLayoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.layoutManager = mLayoutManager
         recyclerView.setHasFixedSize(true)
-        adapter = MovieListAdapter(movieList, requireActivity())
+        adapter = MovieListAdapter(categoryStr, movieList, requireActivity())
         recyclerView.adapter = adapter
         setRVScrollListener()
         setData()
@@ -134,14 +139,96 @@ class MovieFragment(context: Context) : BaseFragment<MovieViewModel>() {
                             Log.e("movies", "movieList size - " + movieList.size)
 
                             adapter.addData(movieList)
+                            addAllMovies(movieList)
                         }
                     }
                 }
                 Status.ERROR -> {
                     Log.e("TAG", "Error loading data from network")
                     progressBar.visibility = View.GONE
+                    getAllMovies()
                 }
             }
+        })
+    }
+
+    private fun addAllMovies(movieList: ArrayList<Result?>) {
+        val upcomingList: MutableList<Upcoming> = ArrayList()
+        for (item in movieList) {
+            val upcoming = Upcoming(
+                0,
+                item?.id!!,
+                item.title!!,
+                item.posterPath,
+                item.voteCount,
+                item.popularity,
+                item.backdropPath,
+                item.voteAverage,
+                item.releaseDate,
+                item.budget,
+                item.revenue,
+                item.runtime,
+                item.tagline,
+                item.overview,
+                item.genres,
+                item.spokenLanguages,
+                categoryStr
+            )
+            upcomingList.add((upcoming))
+        }
+
+        mViewModel?.addAllMovie(upcomingList)?.observe(this, Observer {
+            Log.e("Fragment", "upcomingList size - ${upcomingList.size}")
+
+        })
+    }
+
+    private fun getAllMovies() {
+        mViewModel?.getAllMovies()?.observe(this, Observer {
+            Log.e("Fragment", "upcomingList size - ${it.size}")
+            for (item in it) {
+                if (item.category == categoryStr) {
+                    if (item.genres == null) {
+                        genreList = ArrayList()
+                    } else {
+                        genreList = item.genres!!
+                    }
+                    if (item.spokenLanguages == null) {
+                        sLanguageList = ArrayList()
+                    } else {
+                        item.spokenLanguages.let {
+                            sLanguageList = item.spokenLanguages!!
+                        }
+                    }
+                    val result = Result(
+                        item.popularity,
+                        item.voteCount,
+                        false,
+                        item.poster,
+                        item.id,
+                        false,
+                        item.backdropPath,
+                        "",
+                        item.title,
+                        null,
+                        item.title,
+                        item.voteAverage,
+                        item.overview,
+                        item.releaseDate,
+                        item.budget!!,
+                        genreList,
+                        "",
+                        item.revenue!!,
+                        item.runtime!!,
+                        sLanguageList,
+                        "",
+                        item.tagline,
+                        item.category
+                    )
+                    movieList.add(result)
+                }
+            }
+            adapter.addData(movieList)
         })
     }
 

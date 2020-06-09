@@ -21,7 +21,12 @@ import com.nabeel.themoviedbtest.view.activity.MovieDetailsActivity
 import kotlinx.android.synthetic.main.item_list_grid_movie.view.*
 import kotlinx.android.synthetic.main.progress_loading.view.*
 
-class MovieListAdapter(var movieList: ArrayList<Result?>, var activity: Activity) :
+
+class MovieListAdapter(
+    var category: String,
+    var movieList: ArrayList<Result?>,
+    var activity: Activity
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private lateinit var mContext: Context
@@ -58,7 +63,7 @@ class MovieListAdapter(var movieList: ArrayList<Result?>, var activity: Activity
 
             Glide.with(mContext)
                 .load(AppConstant.IMAGE_BASE_URL + movie?.posterPath)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .error(R.drawable.ic_placeholder)
                 .placeholder(R.drawable.ic_placeholder)
@@ -67,7 +72,8 @@ class MovieListAdapter(var movieList: ArrayList<Result?>, var activity: Activity
             holder.itemView.setOnClickListener {
                 val options = ActivityOptions.makeSceneTransitionAnimation(activity)
                 val intent = Intent(mContext, MovieDetailsActivity::class.java)
-                intent.putExtra("id", movie?.id)
+                intent.putExtra("movie", movie)
+                intent.putExtra("category", category)
                 mContext.startActivity(intent, options.toBundle())
             }
 
