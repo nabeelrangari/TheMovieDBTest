@@ -25,5 +25,5 @@ data class Upcoming(
     var genres: ArrayList<Genre>? = null,
     @Embedded
     var spokenLanguages: ArrayList<SpokenLanguage>? = null,
-    var category: String
+    var category: String = "upcoming"
 )

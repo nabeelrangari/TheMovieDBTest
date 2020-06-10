@@ -20,9 +20,9 @@ class Repository constructor(context: Context) {
 
     suspend fun getMovieDetails(id: String) = api.getMovieDetails(id, AppConstant.API_KEY)
 
-    fun addAllUpcomingMovies(req: List<Upcoming>) = upcoming.addAllMovieToDb(req)
+    fun addAllMovies(req: List<Upcoming>) = upcoming.addAllMovieToDb(req)
 
-    fun getAllUpcomingMovies() = upcoming.getAllMovieList()
+    fun getAllMovies() = upcoming.getAllMovieList()
 
-    fun updateUpcomingMovie(req: Upcoming) = upcoming.update(req)
+    fun updateMovie(req: Upcoming) = upcoming.update(req)
 }

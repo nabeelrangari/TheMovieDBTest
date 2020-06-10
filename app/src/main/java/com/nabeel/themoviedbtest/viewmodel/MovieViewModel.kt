@@ -1,6 +1,5 @@
 package com.nabeel.themoviedbtest.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.nabeel.themoviedbtest.base.BaseViewModel
@@ -44,7 +43,7 @@ class MovieViewModel : BaseViewModel() {
 
     fun addAllMovie(input: List<Upcoming>) = liveData(Dispatchers.IO) {
         try {
-            repository.addAllUpcomingMovies(input)
+            repository.addAllMovies(input)
         } catch (e: Exception) {
             e.printStackTrace()
             emit(e.localizedMessage)
@@ -53,6 +52,6 @@ class MovieViewModel : BaseViewModel() {
 
     fun getAllMovies(): LiveData<List<Upcoming>> =
         liveData(Dispatchers.IO) {
-            emitSource(repository.getAllUpcomingMovies())
+            emitSource(repository.getAllMovies())
         }
 }

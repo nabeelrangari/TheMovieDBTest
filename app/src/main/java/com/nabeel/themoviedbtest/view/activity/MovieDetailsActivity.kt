@@ -19,7 +19,6 @@ import com.nabeel.themoviedbtest.model.Result
 import com.nabeel.themoviedbtest.util.AppConstant
 import com.nabeel.themoviedbtest.util.Utils
 import com.nabeel.themoviedbtest.viewmodel.MovieDetailsViewModel
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_movie_details.*
 
 class MovieDetailsActivity : BaseActivity<MovieDetailsViewModel>() {
@@ -44,7 +43,7 @@ class MovieDetailsActivity : BaseActivity<MovieDetailsViewModel>() {
                     movieDetails.let {
                         progressBar.visibility = View.GONE
                         setData(movieDetails!!)
-                        updateMovie(movieDetails)
+                        //updateMovie(movieDetails)
                     }
                 }
                 Status.ERROR -> {

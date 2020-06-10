@@ -229,6 +229,7 @@ class MovieFragment(context: Context) : BaseFragment<MovieViewModel>() {
                 }
             }
             adapter.addData(movieList)
+            addAllMovies(movieList)
         })
     }
 

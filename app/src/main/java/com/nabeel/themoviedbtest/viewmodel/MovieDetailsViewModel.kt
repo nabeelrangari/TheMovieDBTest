@@ -27,7 +27,7 @@ class MovieDetailsViewModel : BaseViewModel() {
 
     fun updateMovie(input: Upcoming) = liveData(Dispatchers.IO) {
         try {
-            repository.updateUpcomingMovie(input)
+            repository.updateMovie(input)
         } catch (e: Exception) {
             e.printStackTrace()
             emit(e.localizedMessage)
